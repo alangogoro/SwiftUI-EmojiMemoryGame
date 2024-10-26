@@ -14,45 +14,35 @@ struct CardView: View {
     let card: Card
     
     var body: some View {
-        
-        // Functional Programming 將函式作為參數傳遞
-        // 比如下VStack的 content 參數
-        ZStack(content: {
-            let base: RoundedRectangle = RoundedRectangle(cornerRadius: Constants.cornerRadius)
-            Group {
-                base.fill().foregroundColor(.white)
-                base.strokeBorder(lineWidth: Constants.lineWidth)
+        Pie(endAngle: .degrees(120))
+            .opacity(Constants.Pie.opacity)
+            .overlay {
                 Text(card.content)
-                    .font(.system(size: 200))
-                    // 限定字體因寬高限制而縮小的最小比率，此處為 1/100
-                    .minimumScaleFactor(0.01)
-                    // 設定 Text 的 寬&高比例是正方形 (1:1)
-                    .aspectRatio(1, contentMode: .fit)
-                    .padding(Constants.inset)
+                    .font(.system(size: Constants.FontSize.largest))
+                    .minimumScaleFactor(Constants.FontSize.scaleFactor)
                     .multilineTextAlignment(.center)
+                    .aspectRatio(1, contentMode: .fit)
+                    .padding(Constants.Pie.inset)
             }
-            // opacity 透明度
-            .opacity(card.isFaceUp ? 1 : 0)
-            base.fill()
-                .opacity(card.isFaceUp ? 0 : 1)
-        })
-        .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
-        /* 點擊 ZStack 時觸發
-         .onTapGesture(perform: {
-         card.isFaceUp.toggle()
-         }) */
-        
+            .padding(Constants.inset)
+            // 自定義的 ViewModifier
+            .modifier(Cardify(isFaceUp: card.isFaceUp)) // 或 .cardify(isFaceUp:)
+            .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
     }
     
     // MARK: 常數
     private struct Constants {
-        static let cornerRadius: CGFloat = 12
-        static let lineWidth: CGFloat = 2
         static let inset: CGFloat = 5
+
         struct FontSize {
             static let largest: CGFloat = 200
             static let smallest: CGFloat = 10
             static let scaleFactor = smallest / largest
+        }
+
+        struct Pie {
+            static let opacity: CGFloat = 0.4
+            static let inset: CGFloat = 5
         }
     }
 }
