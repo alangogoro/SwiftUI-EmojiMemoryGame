@@ -8,11 +8,13 @@
 import SwiftUI
 
 class EmojiMemoryGame: ObservableObject {
+    typealias Card = MemoryGame<String>.Card
+    
     // 靜態常數 & 靜態方法
-    private static let emojis = ["👻", "🎃", "😈", "💀", "🧙🏻‍♀️", "🕸️", "👺", "👽", "😱"]
+    private static let emojis = ["👻", "🎃", "😈", "💀", "🧙🏻‍♀️", "🕸️", "🗿", "👺", "👽", "😱"]
     private static func createMemoryGame() -> MemoryGame<String> {
         return MemoryGame(
-            numberOfPairsOfCards: 4,
+            numberOfPairsOfCards: 10,
             // cardContentFactory: (Int) -> CardContent
             // 採用 functional programming: 將函式設為 MemoryGame 初始器的一個參數
             cardContentFactory: { pairIndex in
@@ -28,7 +30,7 @@ class EmojiMemoryGame: ObservableObject {
     // ⭐️ ObservableObject 中的屬性，可加上 **@Published** property wrapper
     @Published private var model = createMemoryGame()
     
-    var cards: [MemoryGame<String>.Card] {
+    var cards: [Card] {
         return model.cards
     }
     
@@ -37,7 +39,7 @@ class EmojiMemoryGame: ObservableObject {
         model.shuffle()
     }
     
-    func choose(_ card: MemoryGame<String>.Card) {
+    func choose(_ card: Card) {
         model.choose(card)
     }
     
