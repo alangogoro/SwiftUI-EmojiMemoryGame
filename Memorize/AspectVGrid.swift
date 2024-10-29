@@ -14,6 +14,7 @@ struct AspectVGrid<Item, ItemView: View>: View where Item: Identifiable {
     var content: (Item) -> ItemView
     
     var body: some View {
+
         GeometryReader { geometry in
             let gridItemSize = gridItemThatFits(count: items.count,
                                                 size: geometry.size,
@@ -32,6 +33,7 @@ struct AspectVGrid<Item, ItemView: View>: View where Item: Identifiable {
                 }
             }
         }
+
     }
     
     /// 根據卡片張數、寬高比，與 view 的尺寸來計算 GridItem 的大小

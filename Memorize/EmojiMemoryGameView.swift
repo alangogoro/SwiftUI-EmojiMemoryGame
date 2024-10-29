@@ -18,34 +18,53 @@ struct EmojiMemoryGameView: View {
 
             Spacer()
 
+            score
             HStack {
                 cardAdder
                 Spacer()
                 Button("Shuffle") {
-                    viewModel.shuffle()
+                    withAnimation {
+                        viewModel.shuffle()
+                    }
                 }
                 Spacer()
                 cardRemover
             }
             .imageScale(.large)
-            .font(.largeTitle)
+            .font(.title)
 
         }
         .padding()
     }
     
+    typealias Card = MemoryGame<String>.Card
     private let cardAspectRatio: CGFloat = 2/3
     private var cards: some View {
         AspectVGrid(items: viewModel.cards, aspectRatio: cardAspectRatio) { card in
             VStack {
                 CardView(card: card)
                     .padding(4)
+                    .overlay(FlyingNumber(number: scoreChange(causedBy: card)))
+                
                     .onTapGesture {
-                        viewModel.choose(card)
+                        withAnimation() {
+                            viewModel.choose(card)
+                        }
                     }
             }
         }
         .foregroundColor(Color.orange)
+    }
+    
+    private func scoreChange(causedBy card: Card) -> Int {
+        return 0
+    }
+    
+    /// 得分文字
+    var score: some View {
+        Text("Score: \(viewModel.score)")
+            .font(.title)
+            .animation(nil)
     }
     
     /// 加卡片按鈕
@@ -76,3 +95,4 @@ struct EmojiMemoryGameView: View {
 #Preview {
     EmojiMemoryGameView(viewModel: EmojiMemoryGame())
 }
+

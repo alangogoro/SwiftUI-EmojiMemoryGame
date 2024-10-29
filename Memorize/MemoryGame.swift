@@ -13,7 +13,14 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
      * 當 ==(lhs:rhs:) 是逐條比對物件屬性，可以省略不寫（Swift 會默認進行比對）*/
     /* Card 須遵從 Identifiable 增加一屬性 "id" */
     struct Card: Equatable, Identifiable, CustomDebugStringConvertible {
-        var isFaceUp = false
+        var isFaceUp = false {
+            didSet {
+                if oldValue && !isFaceUp {
+                    hasBeenSeen = true
+                }
+            }
+        }
+        var hasBeenSeen = false
         var isMatched = false
         let content: CardContent
 
@@ -25,6 +32,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     }
     
     private(set) var cards: [Card]
+    private(set) var score = 0
     
     /* Getter & Setter 計算屬性 */
     var indexOfOneAndOnlyFaceUpCard: Int? {
@@ -81,9 +89,19 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         if let chosenIndex = cards.firstIndex(where: { $0.id == card.id }) {
             if !cards[chosenIndex].isFaceUp && !cards[chosenIndex].isMatched {
                 if let potentialMatchIndex = indexOfOneAndOnlyFaceUpCard {
+                    // 配成一對
                     if cards[chosenIndex].content == cards[potentialMatchIndex].content {
                         cards[chosenIndex].isMatched = true
                         cards[potentialMatchIndex].isMatched = true
+                        score += 2
+                    } else {
+                        // 配對失敗
+                        if cards[chosenIndex].hasBeenSeen {
+                            score -= 1
+                        }
+                        if cards[potentialMatchIndex].hasBeenSeen {
+                            score -= 1
+                        }
                     }
                 } else {
                     indexOfOneAndOnlyFaceUpCard = chosenIndex

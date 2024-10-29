@@ -23,6 +23,11 @@ struct CardView: View {
                     .multilineTextAlignment(.center)
                     .aspectRatio(1, contentMode: .fit)
                     .padding(Constants.Pie.inset)
+
+                // 在卡片配對成功(isMatched)時，啟用旋轉動畫
+                    .rotationEffect(.degrees(card.isMatched ? 360 : 0))
+                    .animation(.spin(duration: 1),
+                               value: card.isMatched)
             }
             .padding(Constants.inset)
             // 自定義的 ViewModifier
@@ -62,5 +67,14 @@ struct CardView_Previews: PreviewProvider {
             .aspectRatio(3/4, contentMode: .fit)
         }
         .padding()
+    }
+}
+
+// MARK: - Animation
+extension Animation {
+    static func spin(duration: TimeInterval) -> Animation {
+        .linear(duration: duration)
+        // 永遠重複動畫
+        .repeatForever(autoreverses: false)
     }
 }

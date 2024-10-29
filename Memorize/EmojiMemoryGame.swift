@@ -14,7 +14,7 @@ class EmojiMemoryGame: ObservableObject {
     private static let emojis = ["👻", "🎃", "😈", "💀", "🧙🏻‍♀️", "🕸️", "🗿", "👺", "👽", "😱"]
     private static func createMemoryGame() -> MemoryGame<String> {
         return MemoryGame(
-            numberOfPairsOfCards: 10,
+            numberOfPairsOfCards: 2,
             // cardContentFactory: (Int) -> CardContent
             // 採用 functional programming: 將函式設為 MemoryGame 初始器的一個參數
             cardContentFactory: { pairIndex in
@@ -32,6 +32,10 @@ class EmojiMemoryGame: ObservableObject {
     
     var cards: [Card] {
         return model.cards
+    }
+    
+    var score: Int {
+        return model.score
     }
     
     // MARK: - Intents
