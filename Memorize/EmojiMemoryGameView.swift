@@ -45,10 +45,17 @@ struct EmojiMemoryGameView: View {
                 CardView(card: card)
                     .padding(4)
                     .overlay(FlyingNumber(number: scoreChange(causedBy: card)))
+                    .zIndex(scoreChange(causedBy: card) != 0 ? 1 : 0)
                 
+                // 點擊（選牌）
                     .onTapGesture {
                         withAnimation() {
+                            let scoreBeforeChoosing = viewModel.score
                             viewModel.choose(card)
+
+                            // 選牌後，通知得分變化
+                            let scoreChange = viewModel.score - scoreBeforeChoosing
+                            lastScoreChange = (scoreChange, card.id)
                         }
                     }
             }
@@ -56,8 +63,12 @@ struct EmojiMemoryGameView: View {
         .foregroundColor(Color.orange)
     }
     
+    /// 得分變化元組
+    @State private var lastScoreChange = (0, causedByCardId: "")
+    
     private func scoreChange(causedBy card: Card) -> Int {
-        return 0
+        let (amount, id) = lastScoreChange
+        return card.id == id ? amount : 0
     }
     
     /// 得分文字

@@ -14,25 +14,34 @@ struct CardView: View {
     let card: Card
     
     var body: some View {
-        Pie(endAngle: .degrees(120))
-            .opacity(Constants.Pie.opacity)
-            .overlay {
-                Text(card.content)
-                    .font(.system(size: Constants.FontSize.largest))
-                    .minimumScaleFactor(Constants.FontSize.scaleFactor)
-                    .multilineTextAlignment(.center)
-                    .aspectRatio(1, contentMode: .fit)
-                    .padding(Constants.Pie.inset)
-
-                // 在卡片配對成功(isMatched)時，啟用旋轉動畫
-                    .rotationEffect(.degrees(card.isMatched ? 360 : 0))
-                    .animation(.spin(duration: 1),
-                               value: card.isMatched)
+        TimelineView(.animation) { timeline in
+            if card.isFaceUp || !card.isMatched {
+                Pie(endAngle: .degrees(card.bonusPercentRemaining * 360))
+                    .opacity(Constants.Pie.opacity)
+                    .overlay {
+                        cardContents.padding(Constants.Pie.inset)
+                    }
+                    .padding(Constants.inset)
+                // 自定義的 ViewModifier Cardify
+                    .modifier(Cardify(isFaceUp: card.isFaceUp)) // 或 .cardify(isFaceUp:)
+                    .transition(.scale)
+            } else {
+                Color.clear
             }
-            .padding(Constants.inset)
-            // 自定義的 ViewModifier
-            .modifier(Cardify(isFaceUp: card.isFaceUp)) // 或 .cardify(isFaceUp:)
-            .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
+        }
+    }
+    
+    var cardContents: some View {
+        Text(card.content)
+            .font(.system(size: Constants.FontSize.largest))
+            .minimumScaleFactor(Constants.FontSize.scaleFactor)
+            .multilineTextAlignment(.center)
+            .aspectRatio(1, contentMode: .fit)
+        
+        // 在卡片配對成功(isMatched)時，啟用旋轉動畫
+            .rotationEffect(.degrees(card.isMatched ? 360 : 0))
+            .animation(.spin(duration: 1),
+                       value: card.isMatched)
     }
     
     // MARK: 常數

@@ -33,15 +33,10 @@ struct Cardify: ViewModifier, Animatable {
             base.strokeBorder(lineWidth: Constants.lineWidth)
                 .background(base.fill(.white))
                 .overlay(content)
-                // opacity 透明度
                 .opacity(isFaceUp ? 1 : 0)
             base.fill()
                 .opacity(isFaceUp ? 0 : 1)
 
-            /* 點擊 ZStack 時觸發
-             .onTapGesture(perform: {
-             card.isFaceUp.toggle()
-             }) */
         })
         // 3D旋轉動畫
         .rotation3DEffect(.degrees(rotation),
